@@ -9,6 +9,7 @@ import (
 
 func New(db *sql.DB) *http.ServeMux {
 	mux := http.NewServeMux()
+	mux.HandleFunc("/api/signin", handlers.HandleSignin(db))
 	mux.HandleFunc("/api/signup", handlers.HandleSignup(db))
 	return mux
 }

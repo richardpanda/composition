@@ -20,6 +20,7 @@ const createUsersTableQuery = `
 	);
 `
 const dropUserTableQuery = "DROP TABLE users;"
+const getUserByUsernameQuery = "SELECT * FROM users WHERE username=$1;"
 
 func CreateUser(db *sql.DB, u *User) *sql.Row {
 	return db.QueryRow(createUserQuery, u.Username, u.Email, u.Password)
@@ -31,4 +32,8 @@ func CreateUsersTable(db *sql.DB) (sql.Result, error) {
 
 func DropUsersTable(db *sql.DB) (sql.Result, error) {
 	return db.Exec(dropUserTableQuery)
+}
+
+func GetUserByUsername(db *sql.DB, username string) *sql.Row {
+	return db.QueryRow(getUserByUsernameQuery, username)
 }

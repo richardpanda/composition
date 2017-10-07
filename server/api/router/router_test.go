@@ -14,6 +14,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/richardpanda/composition/server/api/models"
 	"github.com/richardpanda/composition/server/api/types"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var (
@@ -35,6 +36,47 @@ func teardown() {
 	_, err := models.DropUsersTable(db)
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+func TestSignin(t *testing.T) {
+	setup()
+	defer teardown()
+
+	password := "test"
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	u := models.User{
+		Username: "test",
+		Email:    "test@test.com",
+		Password: string(hash),
+	}
+
+	models.CreateUser(db, &u)
+
+	b, _ := json.Marshal(types.SigninBody{
+		Username: "test",
+		Password: "test",
+	})
+
+	req, _ := http.NewRequest("POST", "/api/signin", bytes.NewBuffer(b))
+	rr := httptest.NewRecorder()
+	mux.ServeHTTP(rr, req)
+
+	if rr.Code != 200 {
+		fmt.Println(rr)
+		t.Fatalf("Expected: 200, received: %d", rr.Code)
+	}
+
+	var sr types.SigninResponse
+	err = json.Unmarshal(rr.Body.Bytes(), &sr)
+
+	if err != nil {
+		t.Fatal(err)
 	}
 }
 
