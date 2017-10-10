@@ -11,6 +11,51 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func HandlePostArticles(db *sql.DB) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case "POST":
+			userID := int(r.Context().Value("user").(jwt.MapClaims)["id"].(float64))
+
+			decoder := json.NewDecoder(r.Body)
+			var reqBody types.PostArticlesBody
+			err := decoder.Decode(&reqBody)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			defer r.Body.Close()
+
+			a := models.Article{
+				UserID: userID,
+				Title:  reqBody.Title,
+				Body:   reqBody.Body,
+			}
+
+			var id int
+			err = models.CreateArticle(db, &a).Scan(&id)
+
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusConflict)
+				return
+			}
+
+			m, err := json.Marshal(a)
+
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusCreated)
+			w.Write(m)
+		default:
+			http.Error(w, "Invalid route.", http.StatusNotFound)
+		}
+	})
+}
+
 func HandleSignin(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {

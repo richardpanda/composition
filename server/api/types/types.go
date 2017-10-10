@@ -13,6 +13,11 @@ type JWTClaims struct {
 	jwt.StandardClaims
 }
 
+type PostArticlesBody struct {
+	Title string `json:"title"`
+	Body  string `json:"body"`
+}
+
 type SigninBody struct {
 	Username string `json:"username"`
 	Password string `json:"password"`

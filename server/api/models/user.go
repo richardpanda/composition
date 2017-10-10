@@ -19,7 +19,7 @@ const createUsersTableQuery = `
 		password VARCHAR(255) NOT NULL
 	);
 `
-const dropUserTableQuery = "DROP TABLE users;"
+const dropUserTableQuery = "DROP TABLE users CASCADE;"
 const getUserByUsernameQuery = "SELECT * FROM users WHERE username=$1;"
 
 func CreateUser(db *sql.DB, u *User) *sql.Row {
