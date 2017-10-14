@@ -125,33 +125,61 @@ func HandleSignup(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "POST":
+			if r.Body == nil {
+				setResponse(w, 400, "Username, email, password, and password confirm are required.")
+				return
+			}
+
 			decoder := json.NewDecoder(r.Body)
-			var sb types.SignupBody
-
-			err := decoder.Decode(&sb)
-
+			var body types.SignupBody
+			err := decoder.Decode(&body)
 			if err != nil {
-				http.Error(w, "Username, email, password, and password confirm are required.", http.StatusBadRequest)
-				panic(err)
+				setResponse(w, 400, "Username, email, password, and password confirm are required.")
+				return
 			}
 
 			defer r.Body.Close()
 
-			if sb.Password != sb.PasswordConfirm {
-				http.Error(w, "Passwords do not match.", http.StatusBadRequest)
+			if body == (types.SignupBody{}) {
+				setResponse(w, 400, "Username, email, password, and password confirm are required.")
 				return
 			}
 
-			hash, err := bcrypt.GenerateFromPassword([]byte(sb.Password), bcrypt.MinCost)
+			if body.Username == "" {
+				setResponse(w, 400, "Username is required.")
+				return
+			}
+
+			if body.Email == "" {
+				setResponse(w, 400, "Email is required.")
+				return
+			}
+
+			if body.Password == "" {
+				setResponse(w, 400, "Password is required.")
+				return
+			}
+
+			if body.PasswordConfirm == "" {
+				setResponse(w, 400, "Password confirm is required.")
+				return
+			}
+
+			if body.Password != body.PasswordConfirm {
+				setResponse(w, 400, "Passwords do not match.")
+				return
+			}
+
+			hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), bcrypt.MinCost)
 
 			if err != nil {
-				http.Error(w, "", http.StatusInternalServerError)
+				setResponse(w, 500, err.Error())
 				return
 			}
 
 			u := models.User{
-				Username: sb.Username,
-				Email:    sb.Email,
+				Username: body.Username,
+				Email:    body.Email,
 				Password: string(hash),
 			}
 
@@ -159,7 +187,7 @@ func HandleSignup(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 			err = models.CreateUser(db, &u).Scan(&id)
 
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusConflict)
+				setResponse(w, 409, err.Error())
 				return
 			}
 
@@ -174,21 +202,29 @@ func HandleSignup(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 			ss, err := token.SignedString(types.JWTSecret)
 
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				setResponse(w, 500, err.Error())
 				return
 			}
 
 			m, err := json.Marshal(map[string]string{"token": ss})
 
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				setResponse(w, 500, err.Error())
 				return
 			}
 
 			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(200)
 			w.Write(m)
 		default:
-			http.Error(w, "Invalid route.", http.StatusNotFound)
+			setResponse(w, 404, "Invalid route.")
 		}
 	}
+}
+
+func setResponse(w http.ResponseWriter, code int, message string) {
+	respBody, _ := json.Marshal(types.ErrorResponseBody{Message: message})
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	w.Write(respBody)
 }

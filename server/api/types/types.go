@@ -6,6 +6,10 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
+type ErrorResponseBody struct {
+	Message string `json:"message"`
+}
+
 var JWTSecret = []byte(os.Getenv("JWT_SECRET"))
 
 type JWTClaims struct {
@@ -34,6 +38,6 @@ type SignupBody struct {
 	PasswordConfirm string `json:"password_confirm"`
 }
 
-type SignupResponse struct {
+type SignupResponseBody struct {
 	Token string `json:"token"`
 }
