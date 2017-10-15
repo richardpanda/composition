@@ -60,12 +60,17 @@ func HandleSignin(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "POST":
+			if r.Body == nil {
+				setResponse(w, 400, "Username and password are required.")
+				return
+			}
+
 			decoder := json.NewDecoder(r.Body)
 			var sb types.SigninBody
 			err := decoder.Decode(&sb)
 
 			if err != nil {
-				http.Error(w, "Username and password are required.", http.StatusBadRequest)
+				setResponse(w, 400, "Username and password are required.")
 				return
 			}
 
@@ -80,14 +85,14 @@ func HandleSignin(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 			err = models.GetUserByUsername(db, sb.Username).Scan(&id, &username, &email, &password)
 
 			if err != nil {
-				http.Error(w, "Username is invalid.", http.StatusBadRequest)
+				setResponse(w, 400, "Username is invalid.")
 				return
 			}
 
 			err = bcrypt.CompareHashAndPassword([]byte(password), []byte(sb.Password))
 
 			if err != nil {
-				http.Error(w, "Password is invalid.", http.StatusBadRequest)
+				setResponse(w, 400, "Password is invalid.")
 				return
 			}
 
@@ -102,21 +107,21 @@ func HandleSignin(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 			ss, err := token.SignedString(types.JWTSecret)
 
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				setResponse(w, 500, err.Error())
 				return
 			}
 
 			m, err := json.Marshal(map[string]string{"token": ss})
 
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				setResponse(w, 500, err.Error())
 				return
 			}
 
 			w.Header().Set("Content-Type", "application/json")
 			w.Write(m)
 		default:
-			http.Error(w, "Invalid route.", http.StatusNotFound)
+			setResponse(w, 404, "Invalid route.")
 		}
 	}
 }

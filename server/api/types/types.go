@@ -27,7 +27,7 @@ type SigninBody struct {
 	Password string `json:"password"`
 }
 
-type SigninResponse struct {
+type SigninResponseBody struct {
 	Token string `json:"token"`
 }
 

@@ -3,7 +3,6 @@ package router
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -13,7 +12,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func TestSignin(t *testing.T) {
+func TestSuccessfulSignin(t *testing.T) {
 	createUsersTable()
 	defer dropUsersTable()
 
@@ -41,16 +40,134 @@ func TestSignin(t *testing.T) {
 	rr := httptest.NewRecorder()
 	mux.ServeHTTP(rr, req)
 
-	if rr.Code != 200 {
-		fmt.Println(rr)
-		t.Fatalf("Expected: 200, received: %d", rr.Code)
+	expectedCode := 200
+	if rr.Code != expectedCode {
+		t.Fatalf("Expected: %d\nReceived: %d", expectedCode, rr.Code)
 	}
 
-	var sr types.SigninResponse
-	err = json.Unmarshal(rr.Body.Bytes(), &sr)
+	var respBody types.SigninResponseBody
+	err = json.Unmarshal(rr.Body.Bytes(), &respBody)
 
 	if err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestSigninWithoutBody(t *testing.T) {
+	createUsersTable()
+	defer dropUsersTable()
+
+	req, _ := http.NewRequest("POST", "/api/signin", nil)
+	rr := httptest.NewRecorder()
+	mux.ServeHTTP(rr, req)
+
+	expectedCode := 400
+	if rr.Code != expectedCode {
+		t.Fatalf("Expected: %d\nReceived: %d", expectedCode, rr.Code)
+	}
+
+	expectedContentType := "application/json"
+	if rr.Header().Get("Content-Type") != expectedContentType {
+		t.Fatalf("Expected: %s\nReceived %s", expectedContentType, rr.Header().Get("Content-Type"))
+	}
+
+	var respBody types.ErrorResponseBody
+	err := json.Unmarshal(rr.Body.Bytes(), &respBody)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expectedMessage := "Username and password are required."
+	if respBody.Message != expectedMessage {
+		t.Fatalf("Expected: %s\nReceived: %s", expectedMessage, respBody.Message)
+	}
+}
+
+func TestSigninWithInvalidUsername(t *testing.T) {
+	createUsersTable()
+	defer dropUsersTable()
+
+	b, _ := json.Marshal(types.SigninBody{
+		Username: "test",
+		Password: "test",
+	})
+
+	req, _ := http.NewRequest("POST", "/api/signin", bytes.NewBuffer(b))
+	rr := httptest.NewRecorder()
+	mux.ServeHTTP(rr, req)
+
+	expectedCode := 400
+	if rr.Code != expectedCode {
+		t.Fatalf("Expected: %d\nReceived: %d", expectedCode, rr.Code)
+	}
+
+	expectedContentType := "application/json"
+	if rr.Header().Get("Content-Type") != expectedContentType {
+		t.Fatalf("Expected: %s\nReceived %s", expectedContentType, rr.Header().Get("Content-Type"))
+	}
+
+	var respBody types.ErrorResponseBody
+	err := json.Unmarshal(rr.Body.Bytes(), &respBody)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expectedMessage := "Username is invalid."
+	if respBody.Message != expectedMessage {
+		t.Fatalf("Expected: %s\nReceived: %s", expectedMessage, respBody.Message)
+	}
+}
+
+func TestSigninWithInvalidPassword(t *testing.T) {
+	createUsersTable()
+	defer dropUsersTable()
+
+	password := "test"
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	u := models.User{
+		Username: "test",
+		Email:    "test@test.com",
+		Password: string(hash),
+	}
+
+	models.CreateUser(db, &u)
+
+	b, _ := json.Marshal(types.SigninBody{
+		Username: "test",
+		Password: "invalid password",
+	})
+
+	req, _ := http.NewRequest("POST", "/api/signin", bytes.NewBuffer(b))
+	rr := httptest.NewRecorder()
+	mux.ServeHTTP(rr, req)
+
+	expectedCode := 400
+	if rr.Code != expectedCode {
+		t.Fatalf("Expected: %d\nReceived: %d", expectedCode, rr.Code)
+	}
+
+	expectedContentType := "application/json"
+	if rr.Header().Get("Content-Type") != expectedContentType {
+		t.Fatalf("Expected: %s\nReceived %s", expectedContentType, rr.Header().Get("Content-Type"))
+	}
+
+	var respBody types.ErrorResponseBody
+	err = json.Unmarshal(rr.Body.Bytes(), &respBody)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expectedMessage := "Password is invalid."
+	if respBody.Message != expectedMessage {
+		t.Fatalf("Expected: %s\nReceived: %s", expectedMessage, respBody.Message)
 	}
 }
 
