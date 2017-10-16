@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"testing"
 
 	_ "github.com/lib/pq"
 	"github.com/richardpanda/composition/server/api/models"
@@ -17,6 +18,12 @@ var (
 	db, _            = sql.Open("postgres", connectionString)
 	mux              = New(db)
 )
+
+func assertEqual(t *testing.T, actual, expected interface{}) {
+	if actual != expected {
+		t.Fatalf("\nActual:   %v\nExpected: %v", actual, expected)
+	}
+}
 
 func createArticlesTable() {
 	_, err := models.CreateArticlesTable(db)
