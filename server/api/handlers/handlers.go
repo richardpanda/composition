@@ -8,6 +8,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/richardpanda/composition/server/api/models"
 	"github.com/richardpanda/composition/server/api/types"
+	"github.com/richardpanda/composition/server/api/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -21,10 +22,20 @@ func HandlePostArticles(db *sql.DB) http.Handler {
 			var reqBody types.PostArticlesBody
 			err := decoder.Decode(&reqBody)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
+				utils.SetErrorResponse(w, 400, err.Error())
 				return
 			}
 			defer r.Body.Close()
+
+			if reqBody.Title == "" {
+				utils.SetErrorResponse(w, 400, "Title is required.")
+				return
+			}
+
+			if reqBody.Body == "" {
+				utils.SetErrorResponse(w, 400, "Body is required.")
+				return
+			}
 
 			a := models.Article{
 				UserID: userID,
@@ -36,14 +47,14 @@ func HandlePostArticles(db *sql.DB) http.Handler {
 			err = models.CreateArticle(db, &a).Scan(&id)
 
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusConflict)
+				utils.SetErrorResponse(w, 500, err.Error())
 				return
 			}
 
 			m, err := json.Marshal(a)
 
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				utils.SetErrorResponse(w, 500, err.Error())
 				return
 			}
 
@@ -61,7 +72,7 @@ func HandleSignin(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "POST":
 			if r.Body == nil {
-				setResponse(w, 400, "Username and password are required.")
+				utils.SetErrorResponse(w, 400, "Username and password are required.")
 				return
 			}
 
@@ -70,7 +81,7 @@ func HandleSignin(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 			err := decoder.Decode(&sb)
 
 			if err != nil {
-				setResponse(w, 400, "Username and password are required.")
+				utils.SetErrorResponse(w, 400, "Username and password are required.")
 				return
 			}
 
@@ -85,14 +96,14 @@ func HandleSignin(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 			err = models.GetUserByUsername(db, sb.Username).Scan(&id, &username, &email, &password)
 
 			if err != nil {
-				setResponse(w, 400, "Username is invalid.")
+				utils.SetErrorResponse(w, 400, "Username is invalid.")
 				return
 			}
 
 			err = bcrypt.CompareHashAndPassword([]byte(password), []byte(sb.Password))
 
 			if err != nil {
-				setResponse(w, 400, "Password is invalid.")
+				utils.SetErrorResponse(w, 400, "Password is invalid.")
 				return
 			}
 
@@ -107,21 +118,21 @@ func HandleSignin(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 			ss, err := token.SignedString(types.JWTSecret)
 
 			if err != nil {
-				setResponse(w, 500, err.Error())
+				utils.SetErrorResponse(w, 500, err.Error())
 				return
 			}
 
 			m, err := json.Marshal(map[string]string{"token": ss})
 
 			if err != nil {
-				setResponse(w, 500, err.Error())
+				utils.SetErrorResponse(w, 500, err.Error())
 				return
 			}
 
 			w.Header().Set("Content-Type", "application/json")
 			w.Write(m)
 		default:
-			setResponse(w, 404, "Invalid route.")
+			utils.SetErrorResponse(w, 404, "Invalid route.")
 		}
 	}
 }
@@ -131,7 +142,7 @@ func HandleSignup(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "POST":
 			if r.Body == nil {
-				setResponse(w, 400, "Username, email, password, and password confirm are required.")
+				utils.SetErrorResponse(w, 400, "Username, email, password, and password confirm are required.")
 				return
 			}
 
@@ -139,46 +150,46 @@ func HandleSignup(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 			var body types.SignupBody
 			err := decoder.Decode(&body)
 			if err != nil {
-				setResponse(w, 400, "Username, email, password, and password confirm are required.")
+				utils.SetErrorResponse(w, 400, "Username, email, password, and password confirm are required.")
 				return
 			}
 
 			defer r.Body.Close()
 
 			if body == (types.SignupBody{}) {
-				setResponse(w, 400, "Username, email, password, and password confirm are required.")
+				utils.SetErrorResponse(w, 400, "Username, email, password, and password confirm are required.")
 				return
 			}
 
 			if body.Username == "" {
-				setResponse(w, 400, "Username is required.")
+				utils.SetErrorResponse(w, 400, "Username is required.")
 				return
 			}
 
 			if body.Email == "" {
-				setResponse(w, 400, "Email is required.")
+				utils.SetErrorResponse(w, 400, "Email is required.")
 				return
 			}
 
 			if body.Password == "" {
-				setResponse(w, 400, "Password is required.")
+				utils.SetErrorResponse(w, 400, "Password is required.")
 				return
 			}
 
 			if body.PasswordConfirm == "" {
-				setResponse(w, 400, "Password confirm is required.")
+				utils.SetErrorResponse(w, 400, "Password confirm is required.")
 				return
 			}
 
 			if body.Password != body.PasswordConfirm {
-				setResponse(w, 400, "Passwords do not match.")
+				utils.SetErrorResponse(w, 400, "Passwords do not match.")
 				return
 			}
 
 			hash, err := bcrypt.GenerateFromPassword([]byte(body.Password), bcrypt.MinCost)
 
 			if err != nil {
-				setResponse(w, 500, err.Error())
+				utils.SetErrorResponse(w, 500, err.Error())
 				return
 			}
 
@@ -192,7 +203,7 @@ func HandleSignup(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 			err = models.CreateUser(db, &u).Scan(&id)
 
 			if err != nil {
-				setResponse(w, 409, err.Error())
+				utils.SetErrorResponse(w, 409, err.Error())
 				return
 			}
 
@@ -207,14 +218,14 @@ func HandleSignup(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 			ss, err := token.SignedString(types.JWTSecret)
 
 			if err != nil {
-				setResponse(w, 500, err.Error())
+				utils.SetErrorResponse(w, 500, err.Error())
 				return
 			}
 
 			m, err := json.Marshal(map[string]string{"token": ss})
 
 			if err != nil {
-				setResponse(w, 500, err.Error())
+				utils.SetErrorResponse(w, 500, err.Error())
 				return
 			}
 
@@ -222,14 +233,7 @@ func HandleSignup(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(200)
 			w.Write(m)
 		default:
-			setResponse(w, 404, "Invalid route.")
+			utils.SetErrorResponse(w, 404, "Invalid route.")
 		}
 	}
-}
-
-func setResponse(w http.ResponseWriter, code int, message string) {
-	respBody, _ := json.Marshal(types.ErrorResponseBody{Message: message})
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	w.Write(respBody)
 }

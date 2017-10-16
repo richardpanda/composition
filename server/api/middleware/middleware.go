@@ -7,6 +7,7 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/richardpanda/composition/server/api/types"
+	"github.com/richardpanda/composition/server/api/utils"
 )
 
 func IsAuthenticated(next http.Handler) http.Handler {
@@ -14,12 +15,12 @@ func IsAuthenticated(next http.Handler) http.Handler {
 		authHeader := r.Header.Get("Authorization")
 
 		if authHeader == "" {
-			http.Error(w, "Authorization header is required.", http.StatusBadRequest)
+			utils.SetErrorResponse(w, 401, "Authorization header is required.")
 			return
 		}
 
 		if !strings.HasPrefix(authHeader, "Bearer ") {
-			http.Error(w, "Malformed authorization header.", http.StatusBadRequest)
+			utils.SetErrorResponse(w, 400, "Malformed authorization header.")
 			return
 		}
 
@@ -30,7 +31,7 @@ func IsAuthenticated(next http.Handler) http.Handler {
 		})
 
 		if err != nil || !t.Valid {
-			http.Error(w, "Invalid token.", http.StatusBadRequest)
+			utils.SetErrorResponse(w, 400, "Invalid token.")
 			return
 		}
 
