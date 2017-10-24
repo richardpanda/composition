@@ -10,13 +10,14 @@ type Article struct {
 	Body   string `json:"body"`
 }
 
-const createArticleQuery = "INSERT INTO articles (user_id, title, body) VALUES ($1, $2, $3) RETURNING id;"
+const createArticleQuery = "INSERT INTO articles (user_id, title, body, created_at) VALUES ($1, $2, $3, NOW()) RETURNING id;"
 const createArticlesTableQuery = `
 	CREATE TABLE IF NOT EXISTS articles (
-		id       SERIAL       PRIMARY KEY,
-		user_id  SERIAL       REFERENCES users,
-		title    VARCHAR(50)  NOT NULL,
-		body     TEXT         NOT NULL
+		id         SERIAL       PRIMARY KEY,
+		user_id    SERIAL       REFERENCES users,
+		title      VARCHAR(50)  NOT NULL,
+		body       TEXT         NOT NULL,
+		created_at TIMESTAMP    NOT NULL
 	);
 `
 const dropArticlesTableQuery = "DROP TABLE articles;"

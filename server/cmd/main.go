@@ -29,5 +29,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	_, err = models.CreateArticlesTable(db)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	http.ListenAndServe(":8080", router.New(db))
 }
