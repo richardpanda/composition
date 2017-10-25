@@ -10,33 +10,31 @@ import (
 	"github.com/richardpanda/composition/server/api/utils"
 )
 
-func IsAuthenticated(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		authHeader := r.Header.Get("Authorization")
+func IsAuthenticated(w http.ResponseWriter, r *http.Request) *http.Request {
+	authHeader := r.Header.Get("Authorization")
 
-		if authHeader == "" {
-			utils.SetErrorResponse(w, 401, "Authorization header is required.")
-			return
-		}
+	if authHeader == "" {
+		utils.SetErrorResponse(w, 401, "Authorization header is required.")
+		return nil
+	}
 
-		if !strings.HasPrefix(authHeader, "Bearer ") {
-			utils.SetErrorResponse(w, 400, "Malformed authorization header.")
-			return
-		}
+	if !strings.HasPrefix(authHeader, "Bearer ") {
+		utils.SetErrorResponse(w, 400, "Malformed authorization header.")
+		return nil
+	}
 
-		tokenString := authHeader[len("Bearer "):]
+	tokenString := authHeader[len("Bearer "):]
 
-		t, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			return types.JWTSecret, nil
-		})
-
-		if err != nil || !t.Valid {
-			utils.SetErrorResponse(w, 400, "Invalid token.")
-			return
-		}
-
-		ctx := r.Context()
-		ctx = context.WithValue(ctx, "user", t.Claims.(jwt.MapClaims))
-		next.ServeHTTP(w, r.WithContext(ctx))
+	t, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return types.JWTSecret, nil
 	})
+
+	if err != nil || !t.Valid {
+		utils.SetErrorResponse(w, 400, "Invalid token.")
+		return nil
+	}
+
+	ctx := r.Context()
+	ctx = context.WithValue(ctx, "user", t.Claims.(jwt.MapClaims))
+	return r.WithContext(ctx)
 }

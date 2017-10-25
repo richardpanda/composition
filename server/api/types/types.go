@@ -2,12 +2,24 @@ package types
 
 import (
 	"os"
+	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
+type ArticlePreview struct {
+	Username  string    `json:"username"`
+	Title     string    `json:"title"`
+	ID        int       `json:"article_id"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
 type ErrorResponseBody struct {
 	Message string `json:"message"`
+}
+
+type GetArticlesBody struct {
+	ArticlePreviews []ArticlePreview `json:"article_previews"`
 }
 
 var JWTSecret = []byte(os.Getenv("JWT_SECRET"))

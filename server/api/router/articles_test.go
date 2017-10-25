@@ -14,6 +14,56 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func TestGetArticlePreviews(t *testing.T) {
+	createUsersTable()
+	createArticlesTable()
+	defer dropUsersTable()
+	defer dropArticlesTable()
+
+	password := "test"
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+
+	assertEqual(t, err, nil)
+
+	u := models.User{
+		Username: "test",
+		Email:    "test@test.com",
+		Password: string(hash),
+	}
+
+	var id int
+	err = models.CreateUser(db, &u).Scan(&id)
+
+	assertEqual(t, err, nil)
+
+	for i := 1; i <= 11; i++ {
+		models.CreateArticle(db, &models.Article{
+			UserID: id,
+			Title:  fmt.Sprintf("Title %d", i),
+			Body:   fmt.Sprintf("Body %d", i),
+		})
+	}
+
+	req, _ := http.NewRequest("GET", "/api/articles", nil)
+	rr := httptest.NewRecorder()
+	mux.ServeHTTP(rr, req)
+
+	assertEqual(t, rr.Code, 200)
+	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+
+	var resp types.GetArticlesBody
+	err = json.Unmarshal(rr.Body.Bytes(), &resp)
+
+	assertEqual(t, err, nil)
+	assertEqual(t, len(resp.ArticlePreviews), 10)
+	assertEqual(t, resp.ArticlePreviews[0].ID, 11)
+	assertEqual(t, resp.ArticlePreviews[0].Title, "Title 11")
+	assertEqual(t, resp.ArticlePreviews[0].Username, "test")
+	assertEqual(t, resp.ArticlePreviews[9].ID, 2)
+	assertEqual(t, resp.ArticlePreviews[9].Title, "Title 2")
+	assertEqual(t, resp.ArticlePreviews[9].Username, "test")
+}
+
 func TestSuccessfulPostArticles(t *testing.T) {
 	createUsersTable()
 	createArticlesTable()

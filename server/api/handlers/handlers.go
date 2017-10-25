@@ -4,6 +4,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+	"strconv"
+	"time"
+
+	"github.com/richardpanda/composition/server/api/middleware"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/richardpanda/composition/server/api/models"
@@ -12,10 +16,64 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func HandlePostArticles(db *sql.DB) http.Handler {
+func HandleArticles(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
+		case "GET":
+			var err error
+			page := 1
+			pageNumStr := r.FormValue("page")
+
+			if pageNumStr != "" {
+				page, err = strconv.Atoi(pageNumStr)
+
+				if err != nil {
+					utils.SetErrorResponse(w, 500, err.Error())
+					return
+				}
+			}
+
+			rows, err := models.GetLatestArticlePreviews(db, page)
+
+			if err != nil {
+				utils.SetErrorResponse(w, 500, err.Error())
+				return
+			}
+
+			defer rows.Close()
+
+			var articlePreviews []types.ArticlePreview
+
+			for rows.Next() {
+				var username, title string
+				var id int
+				var createdAt time.Time
+
+				if err := rows.Scan(&username, &title, &id, &createdAt); err != nil {
+					utils.SetErrorResponse(w, 500, err.Error())
+					return
+				}
+
+				articlePreviews = append(articlePreviews, types.ArticlePreview{username, title, id, createdAt})
+			}
+
+			b, err := json.Marshal(types.GetArticlesBody{ArticlePreviews: articlePreviews})
+
+			if err != nil {
+				utils.SetErrorResponse(w, 500, err.Error())
+				return
+			}
+
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			w.Write(b)
 		case "POST":
+			r = middleware.IsAuthenticated(w, r)
+
+			if r == nil {
+				return
+			}
+
 			userID := int(r.Context().Value("user").(jwt.MapClaims)["id"].(float64))
 
 			decoder := json.NewDecoder(r.Body)
@@ -62,7 +120,7 @@ func HandlePostArticles(db *sql.DB) http.Handler {
 			w.WriteHeader(http.StatusCreated)
 			w.Write(m)
 		default:
-			http.Error(w, "Invalid route.", http.StatusNotFound)
+			utils.SetErrorResponse(w, 404, "Invalid route.")
 		}
 	})
 }
