@@ -1,0 +1,16 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Robot', sans-serif;
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+ul {
+    list-style: none;
+}
