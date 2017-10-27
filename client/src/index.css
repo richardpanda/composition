@@ -11,6 +11,7 @@ body {
     height: 100%;
 }
 
+li,
 ul {
     list-style: none;
 }

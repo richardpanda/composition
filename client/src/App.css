@@ -2,3 +2,10 @@
   margin: 0 auto;
   width: 80%;
 }
+
+.LatestArticles {
+  font-size: 1.5rem;
+  height: 3rem;
+  line-height: 3rem;
+  text-align: center;
+}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import './App.css';
+import ArticlePreviewList from './components/ArticlePreviewList';
 import Navbar from './components/Navbar';
 
 class App extends Component {
@@ -10,6 +11,10 @@ class App extends Component {
         <header>
           <Navbar />
         </header>
+        <main>
+          <h1 className="LatestArticles">Latest Articles</h1>
+          <ArticlePreviewList />
+        </main>
       </div>
     );
   }
