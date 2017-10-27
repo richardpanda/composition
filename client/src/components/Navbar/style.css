@@ -1,7 +1,16 @@
 .Navbar-nav {
     background-color: #3E4149;
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: reverse;
+    justify-content: space-between;
+}
+
+.Navbar-home {
+    color: #FFC8C8;
+    line-height: 3rem;
+    text-align: center;
+    text-decoration: none;
+    width: 7rem;
 }
 
 .Navbar-list {
