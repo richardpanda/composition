@@ -113,7 +113,24 @@ func PostSignup(c *gin.Context) {
 	err := models.CreateUser(db, u).Scan(&id)
 
 	if err, ok := err.(*pq.Error); ok {
-		fmt.Println(err.Constraint)
+		fmt.Printf("Severity: %s\n", err.Severity)
+		fmt.Printf("Code: %s\n", err.Code)
+		fmt.Printf("Message: %s\n", err.Message)
+		fmt.Printf("Detail: %s\n", err.Detail)
+		fmt.Printf("Hint: %s\n", err.Hint)
+		fmt.Printf("Position: %s\n", err.Position)
+		fmt.Printf("InternalPosition: %s\n", err.InternalPosition)
+		fmt.Printf("InternalQuery: %s\n", err.InternalQuery)
+		fmt.Printf("Where: %s\n", err.Where)
+		fmt.Printf("Schema: %s\n", err.Schema)
+		fmt.Printf("Table: %s\n", err.Table)
+		fmt.Printf("Column: %s\n", err.Column)
+		fmt.Printf("DataTypeName: %s\n", err.DataTypeName)
+		fmt.Printf("Constraint: %s\n", err.Constraint)
+		fmt.Printf("File: %s\n", err.File)
+		fmt.Printf("Line: %s\n", err.Line)
+		fmt.Printf("Routine: %s\n", err.Routine)
+
 		switch err.Constraint {
 		case "users_username_key":
 			c.JSON(400, gin.H{"message": "Username is not available."})
