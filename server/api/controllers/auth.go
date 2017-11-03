@@ -113,6 +113,7 @@ func PostSignup(c *gin.Context) {
 	err := models.CreateUser(db, u).Scan(&id)
 
 	if err, ok := err.(*pq.Error); ok {
+		fmt.Println(err.Constraint)
 		switch err.Constraint {
 		case "users_username_key":
 			c.JSON(400, gin.H{"message": "Username is not available."})
