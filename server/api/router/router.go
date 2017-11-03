@@ -5,19 +5,19 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/richardpanda/composition/server/api/controllers"
-	"github.com/richardpanda/composition/server/api/middleware"
+	"github.com/richardpanda/composition/server/api/middlewares"
 )
 
 func New(db *sql.DB) *gin.Engine {
 	r := gin.Default()
 
-	r.Use(middleware.DB(db))
+	r.Use(middlewares.DB(db))
 
 	r.GET("/api/articles", controllers.GetArticles)
 	r.POST("/api/signin", controllers.PostSignin)
 	r.POST("/api/signup", controllers.PostSignup)
 
-	r.Use(middleware.Authenticate())
+	r.Use(middlewares.Authenticate())
 
 	r.POST("/api/articles", controllers.PostArticles)
 
