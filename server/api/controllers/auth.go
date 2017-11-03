@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"database/sql"
+	"fmt"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -118,6 +119,7 @@ func PostSignup(c *gin.Context) {
 		case "users_email_key":
 			c.JSON(400, gin.H{"message": "Email is not available."})
 		default:
+			fmt.Println(err)
 			c.JSON(500, gin.H{"message": err.Error()})
 		}
 		return
