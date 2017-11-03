@@ -34,6 +34,12 @@ type PostArticlesBody struct {
 	Body  string `json:"body"`
 }
 
+type PostArticlesResponse struct {
+	ArticleID int    `json:"article_id"`
+	Title     string `json:"title"`
+	Body      string `json:"body"`
+}
+
 type SigninBody struct {
 	Username string `json:"username"`
 	Password string `json:"password"`

@@ -21,13 +21,13 @@ func TestSuccessfulSignin(t *testing.T) {
 
 	assertEqual(t, err, nil)
 
-	u := models.User{
+	u := &models.User{
 		Username: "test",
 		Email:    "test@test.com",
 		Password: string(hash),
 	}
 
-	models.CreateUser(db, &u)
+	models.CreateUser(db, u)
 
 	b, _ := json.Marshal(types.SigninBody{
 		Username: "test",
@@ -36,12 +36,13 @@ func TestSuccessfulSignin(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/api/signin", bytes.NewBuffer(b))
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 200)
+	assertJSONHeader(t, rr)
 
-	var respBody types.SigninResponseBody
-	err = json.Unmarshal(rr.Body.Bytes(), &respBody)
+	respBody := &types.SigninResponseBody{}
+	err = json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 }
@@ -49,13 +50,13 @@ func TestSuccessfulSignin(t *testing.T) {
 func TestSigninWithoutBody(t *testing.T) {
 	req, _ := http.NewRequest("POST", "/api/signin", nil)
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 400)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var respBody types.ErrorResponseBody
-	err := json.Unmarshal(rr.Body.Bytes(), &respBody)
+	respBody := &types.ErrorResponseBody{}
+	err := json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 	assertEqual(t, respBody.Message, "Username and password are required.")
@@ -72,17 +73,13 @@ func TestSigninWithInvalidUsername(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/api/signin", bytes.NewBuffer(b))
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 400)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var respBody types.ErrorResponseBody
-	err := json.Unmarshal(rr.Body.Bytes(), &respBody)
-
-	if err != nil {
-		t.Fatal(err)
-	}
+	respBody := &types.ErrorResponseBody{}
+	err := json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 	assertEqual(t, respBody.Message, "Username is invalid.")
@@ -97,13 +94,13 @@ func TestSigninWithInvalidPassword(t *testing.T) {
 
 	assertEqual(t, err, nil)
 
-	u := models.User{
+	u := &models.User{
 		Username: "test",
 		Email:    "test@test.com",
 		Password: string(hash),
 	}
 
-	models.CreateUser(db, &u)
+	models.CreateUser(db, u)
 
 	b, _ := json.Marshal(types.SigninBody{
 		Username: "test",
@@ -112,13 +109,13 @@ func TestSigninWithInvalidPassword(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/api/signin", bytes.NewBuffer(b))
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 400)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var respBody types.ErrorResponseBody
-	err = json.Unmarshal(rr.Body.Bytes(), &respBody)
+	respBody := &types.ErrorResponseBody{}
+	err = json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 	assertEqual(t, respBody.Message, "Password is invalid.")
@@ -137,13 +134,13 @@ func TestSuccessfulSignup(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/api/signup", bytes.NewBuffer(b))
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 200)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var respBody types.SignupResponseBody
-	err := json.Unmarshal(rr.Body.Bytes(), &respBody)
+	respBody := &types.SigninResponseBody{}
+	err := json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 }
@@ -151,13 +148,13 @@ func TestSuccessfulSignup(t *testing.T) {
 func TestSignupWithoutBody(t *testing.T) {
 	req, _ := http.NewRequest("POST", "/api/signup", nil)
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 400)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var respBody types.ErrorResponseBody
-	err := json.Unmarshal(rr.Body.Bytes(), &respBody)
+	respBody := &types.ErrorResponseBody{}
+	err := json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 	assertEqual(t, respBody.Message, "Username, email, password, and password confirm are required.")
@@ -168,16 +165,16 @@ func TestSignupWithEmptyBody(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/api/signup", bytes.NewBuffer(b))
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 400)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var respBody types.ErrorResponseBody
-	err := json.Unmarshal(rr.Body.Bytes(), &respBody)
+	respBody := &types.ErrorResponseBody{}
+	err := json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
-	assertEqual(t, respBody.Message, "Username, email, password, and password confirm are required.")
+	assertEqual(t, respBody.Message, "Username is required.")
 }
 
 func TestSignupWithoutUsername(t *testing.T) {
@@ -189,13 +186,13 @@ func TestSignupWithoutUsername(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/api/signup", bytes.NewBuffer(b))
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 400)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var respBody types.ErrorResponseBody
-	err := json.Unmarshal(rr.Body.Bytes(), &respBody)
+	respBody := &types.ErrorResponseBody{}
+	err := json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 	assertEqual(t, respBody.Message, "Username is required.")
@@ -210,13 +207,13 @@ func TestSignupWithoutEmail(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/api/signup", bytes.NewBuffer(b))
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 400)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var respBody types.ErrorResponseBody
-	err := json.Unmarshal(rr.Body.Bytes(), &respBody)
+	respBody := &types.ErrorResponseBody{}
+	err := json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 	assertEqual(t, respBody.Message, "Email is required.")
@@ -231,13 +228,13 @@ func TestSignupWithoutPassword(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/api/signup", bytes.NewBuffer(b))
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 400)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var respBody types.ErrorResponseBody
-	err := json.Unmarshal(rr.Body.Bytes(), &respBody)
+	respBody := &types.ErrorResponseBody{}
+	err := json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 	assertEqual(t, respBody.Message, "Password is required.")
@@ -252,13 +249,13 @@ func TestSignupWithoutPasswordConfirm(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/api/signup", bytes.NewBuffer(b))
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 400)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var respBody types.ErrorResponseBody
-	err := json.Unmarshal(rr.Body.Bytes(), &respBody)
+	respBody := &types.ErrorResponseBody{}
+	err := json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 	assertEqual(t, respBody.Message, "Password confirm is required.")
@@ -274,13 +271,13 @@ func TestSignupWithMismatchPasswordAndPasswordConfirm(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/api/signup", bytes.NewBuffer(b))
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 400)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var respBody types.ErrorResponseBody
-	err := json.Unmarshal(rr.Body.Bytes(), &respBody)
+	respBody := &types.ErrorResponseBody{}
+	err := json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 	assertEqual(t, respBody.Message, "Passwords do not match.")

@@ -25,14 +25,14 @@ func TestGetArticlePreviews(t *testing.T) {
 
 	assertEqual(t, err, nil)
 
-	u := models.User{
+	u := &models.User{
 		Username: "test",
 		Email:    "test@test.com",
 		Password: string(hash),
 	}
 
 	var id int
-	err = models.CreateUser(db, &u).Scan(&id)
+	err = models.CreateUser(db, u).Scan(&id)
 
 	assertEqual(t, err, nil)
 
@@ -46,13 +46,13 @@ func TestGetArticlePreviews(t *testing.T) {
 
 	req, _ := http.NewRequest("GET", "/api/articles", nil)
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 200)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var resp types.GetArticlesBody
-	err = json.Unmarshal(rr.Body.Bytes(), &resp)
+	resp := &types.GetArticlesBody{}
+	err = json.Unmarshal(rr.Body.Bytes(), resp)
 
 	assertEqual(t, err, nil)
 	assertEqual(t, len(resp.ArticlePreviews), 10)
@@ -75,14 +75,14 @@ func TestSuccessfulPostArticles(t *testing.T) {
 
 	assertEqual(t, err, nil)
 
-	u := models.User{
+	u := &models.User{
 		Username: "test",
 		Email:    "test@test.com",
 		Password: string(hash),
 	}
 
 	var id int
-	err = models.CreateUser(db, &u).Scan(&id)
+	err = models.CreateUser(db, u).Scan(&id)
 
 	assertEqual(t, err, nil)
 
@@ -106,13 +106,14 @@ func TestSuccessfulPostArticles(t *testing.T) {
 	req, _ := http.NewRequest("POST", "/api/articles", bytes.NewBuffer(b))
 	req.Header.Set("Authorization", authHeader)
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 201)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var resp models.Article
-	err = json.Unmarshal(rr.Body.Bytes(), &resp)
+	respBody := &types.PostArticlesResponse{}
+	err = json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 }
@@ -125,13 +126,13 @@ func TestPostArticlesWithoutToken(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/api/articles", bytes.NewBuffer(b))
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 401)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var respBody types.ErrorResponseBody
-	err := json.Unmarshal(rr.Body.Bytes(), &respBody)
+	respBody := &types.ErrorResponseBody{}
+	err := json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 	assertEqual(t, respBody.Message, "Authorization header is required.")
@@ -160,13 +161,13 @@ func TestPostArticlesWithInvalidToken(t *testing.T) {
 	req, _ := http.NewRequest("POST", "/api/articles", bytes.NewBuffer(b))
 	req.Header.Set("Authorization", authHeader)
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 400)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var respBody types.ErrorResponseBody
-	err = json.Unmarshal(rr.Body.Bytes(), &respBody)
+	respBody := &types.ErrorResponseBody{}
+	err = json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 	assertEqual(t, respBody.Message, "Invalid token.")
@@ -193,18 +194,13 @@ func TestPostArticlesWithoutTitle(t *testing.T) {
 	req, _ := http.NewRequest("POST", "/api/articles", bytes.NewBuffer(b))
 	req.Header.Set("Authorization", authHeader)
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 400)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var resp models.Article
-	err = json.Unmarshal(rr.Body.Bytes(), &resp)
-
-	assertEqual(t, err, nil)
-
-	var respBody types.ErrorResponseBody
-	err = json.Unmarshal(rr.Body.Bytes(), &respBody)
+	respBody := &types.ErrorResponseBody{}
+	err = json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 	assertEqual(t, respBody.Message, "Title is required.")
@@ -231,18 +227,13 @@ func TestPostArticlesWithoutBody(t *testing.T) {
 	req, _ := http.NewRequest("POST", "/api/articles", bytes.NewBuffer(b))
 	req.Header.Set("Authorization", authHeader)
 	rr := httptest.NewRecorder()
-	mux.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	assertEqual(t, rr.Code, 400)
-	assertEqual(t, rr.Header().Get("Content-Type"), "application/json")
+	assertJSONHeader(t, rr)
 
-	var resp models.Article
-	err = json.Unmarshal(rr.Body.Bytes(), &resp)
-
-	assertEqual(t, err, nil)
-
-	var respBody types.ErrorResponseBody
-	err = json.Unmarshal(rr.Body.Bytes(), &respBody)
+	respBody := &types.ErrorResponseBody{}
+	err = json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 	assertEqual(t, respBody.Message, "Body is required.")

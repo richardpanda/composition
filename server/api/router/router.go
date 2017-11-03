@@ -2,15 +2,24 @@ package router
 
 import (
 	"database/sql"
-	"net/http"
 
-	"github.com/richardpanda/composition/server/api/handlers"
+	"github.com/gin-gonic/gin"
+	"github.com/richardpanda/composition/server/api/controllers"
+	"github.com/richardpanda/composition/server/api/middleware"
 )
 
-func New(db *sql.DB) *http.ServeMux {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/api/articles", handlers.HandleArticles(db))
-	mux.HandleFunc("/api/signin", handlers.HandleSignin(db))
-	mux.HandleFunc("/api/signup", handlers.HandleSignup(db))
-	return mux
+func New(db *sql.DB) *gin.Engine {
+	r := gin.Default()
+
+	r.Use(middleware.DB(db))
+
+	r.GET("/api/articles", controllers.GetArticles)
+	r.POST("/api/signin", controllers.PostSignin)
+	r.POST("/api/signup", controllers.PostSignup)
+
+	r.Use(middleware.Authenticate())
+
+	r.POST("/api/articles", controllers.PostArticles)
+
+	return r
 }
