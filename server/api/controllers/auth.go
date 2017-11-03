@@ -5,6 +5,7 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/lib/pq"
 	"github.com/richardpanda/composition/server/api/models"
 	"github.com/richardpanda/composition/server/api/types"
 	"golang.org/x/crypto/bcrypt"
@@ -108,7 +109,19 @@ func PostSignup(c *gin.Context) {
 	}
 
 	var id int
-	_ = models.CreateUser(db, u).Scan(&id)
+	err := models.CreateUser(db, u).Scan(&id)
+
+	if err, ok := err.(*pq.Error); ok {
+		switch err.Constraint {
+		case "users_username_key":
+			c.JSON(400, gin.H{"message": "Username is not available."})
+		case "users_email_key":
+			c.JSON(400, gin.H{"message": "Email is not available."})
+		default:
+			c.JSON(500, gin.H{"message": err.Error()})
+		}
+		return
+	}
 
 	claims := types.JWTClaims{
 		id,

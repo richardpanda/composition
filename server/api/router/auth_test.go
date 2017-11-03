@@ -27,7 +27,7 @@ func TestSuccessfulSignin(t *testing.T) {
 		Password: string(hash),
 	}
 
-	models.CreateUser(db, u)
+	_ = models.CreateUser(db, u)
 
 	b, _ := json.Marshal(types.SigninBody{
 		Username: "test",
@@ -281,4 +281,80 @@ func TestSignupWithMismatchPasswordAndPasswordConfirm(t *testing.T) {
 
 	assertEqual(t, err, nil)
 	assertEqual(t, respBody.Message, "Passwords do not match.")
+}
+
+func TestSignUpWithRegisteredUsername(t *testing.T) {
+	createUsersTable()
+	defer dropUsersTable()
+
+	password := "test"
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+
+	assertEqual(t, err, nil)
+
+	u := &models.User{
+		Username: "test",
+		Email:    "test@test.com",
+		Password: string(hash),
+	}
+
+	_ = models.CreateUser(db, u)
+
+	b, _ := json.Marshal(types.SignupBody{
+		Username:        "test",
+		Email:           "test2@test.com",
+		Password:        "test",
+		PasswordConfirm: "test",
+	})
+
+	req, _ := http.NewRequest("POST", "/api/signup", bytes.NewBuffer(b))
+	rr := httptest.NewRecorder()
+	router.ServeHTTP(rr, req)
+
+	assertEqual(t, rr.Code, 400)
+	assertJSONHeader(t, rr)
+
+	respBody := &types.ErrorResponseBody{}
+	err = json.Unmarshal(rr.Body.Bytes(), respBody)
+
+	assertEqual(t, err, nil)
+	assertEqual(t, respBody.Message, "Username is not available.")
+}
+
+func TestSignUpWithRegisteredEmail(t *testing.T) {
+	createUsersTable()
+	defer dropUsersTable()
+
+	password := "test"
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+
+	assertEqual(t, err, nil)
+
+	u := &models.User{
+		Username: "test",
+		Email:    "test@test.com",
+		Password: string(hash),
+	}
+
+	_ = models.CreateUser(db, u)
+
+	b, _ := json.Marshal(types.SignupBody{
+		Username:        "test2",
+		Email:           "test@test.com",
+		Password:        "test",
+		PasswordConfirm: "test",
+	})
+
+	req, _ := http.NewRequest("POST", "/api/signup", bytes.NewBuffer(b))
+	rr := httptest.NewRecorder()
+	router.ServeHTTP(rr, req)
+
+	assertEqual(t, rr.Code, 400)
+	assertJSONHeader(t, rr)
+
+	respBody := &types.ErrorResponseBody{}
+	err = json.Unmarshal(rr.Body.Bytes(), respBody)
+
+	assertEqual(t, err, nil)
+	assertEqual(t, respBody.Message, "Email is not available.")
 }
