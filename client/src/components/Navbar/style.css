@@ -1,35 +1,3 @@
-.Navbar-nav {
-    background-color: #3E4149;
-    display: flex;
-    flex-direction: reverse;
-    justify-content: space-between;
-}
-
-.Navbar-home {
-    color: #FFC8C8;
-    line-height: 3rem;
-    text-align: center;
-    text-decoration: none;
-    width: 7rem;
-}
-
-.Navbar-list {
-    display: flex;
-    height: 3rem;
-}
-
-.Navbar-item {
-    line-height: 3rem;
-    text-align: center;
-    width: 5rem;
-}
-
-.Navbar-link {
-    color: #FFC8C8;
-    display: block;
-    text-decoration: none;
-}
-
-.Navbar-link:hover {
-    background-color: #444F5A;
+.auth-button {
+    cursor: pointer;
 }

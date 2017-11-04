@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import './style.css';
 
 class Navbar extends Component {
   render() {
     return (
-      <nav className="Navbar-nav">
-        <a className="Navbar-home" href="/">Composition</a>
-        <ul className="Navbar-list">
-          <li className="Navbar-item"><a className="Navbar-link" href="/signin">Sign In</a></li>
-          <li className="Navbar-item"><a className="Navbar-link" href="/signup">Sign Up</a></li>
-        </ul>
+      <nav className="navbar navbar-dark bg-dark">
+        <a className="navbar-brand" href="/">Composition</a>
+        <div>
+          <Link to="/signin"><button className="auth-button btn btn-primary mr-2">Sign In</button></Link>
+          <Link to="/signup"><button className="auth-button btn btn-light">Sign Up</button></Link>
+        </div>
       </nav>
     );
   }
