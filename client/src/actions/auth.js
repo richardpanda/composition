@@ -27,8 +27,6 @@ export const postSignup = (body) => async (dispatch) => {
     const payload = await response.json();
 
     if (response.ok) {
-      localStorage.setItem("token", payload.token);
-      window.location = "/";
       return dispatch(postSignupSuccess(payload));
     } else {
       throw dispatch(postSignupFailure(payload));
