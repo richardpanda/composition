@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
+import Signin from './containers/Signin';
 import Signup from './containers/Signup';
 
 class App extends Component {
@@ -18,6 +19,7 @@ class App extends Component {
           </header>
           <main className="container">
             <Switch>
+              <Route path="/signin" component={Signin} />
               <Route path="/signup" component={Signup} />
             </Switch>
           </main>
