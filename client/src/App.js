@@ -5,8 +5,9 @@ import {
   Switch,
 } from 'react-router-dom';
 
-import Navbar from './components/Navbar';
+import Navbar from './containers/Navbar';
 import Signin from './containers/Signin';
+import Signout from './containers/Signout';
 import Signup from './containers/Signup';
 
 class App extends Component {
@@ -20,6 +21,7 @@ class App extends Component {
           <main className="container">
             <Switch>
               <Route path="/signin" component={Signin} />
+              <Route path="/signout" component={Signout} />
               <Route path="/signup" component={Signup} />
             </Switch>
           </main>

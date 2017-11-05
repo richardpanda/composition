@@ -1,4 +1,5 @@
-import { auth } from '../actions';
+import { auth as actions } from '../actions';
+import { auth as initialState } from '../state';
 
 const {
   POST_SIGNIN_REQUEST,
@@ -7,13 +8,8 @@ const {
   POST_SIGNUP_REQUEST,
   POST_SIGNUP_SUCCESS,
   POST_SIGNUP_FAILURE,
-} = auth;
-
-const initialState = {
-  isFetching: false,
-  isLoggedIn: false,
-  token: '',
-};
+  SIGN_OUT,
+} = actions;
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -26,6 +22,8 @@ const reducer = (state = initialState, action) => {
     case POST_SIGNIN_FAILURE:
     case POST_SIGNUP_FAILURE:
       return { ...state, isFetching: false, isLoggedIn: false };
+    case SIGN_OUT:
+      return { ...state, isLoggedIn: false, token: '' }
     default:
       return state;
   }

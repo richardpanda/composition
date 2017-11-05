@@ -4,6 +4,7 @@ export const POST_SIGNIN_FAILURE = 'POST_SIGNIN_FAILURE';
 export const POST_SIGNUP_REQUEST = 'POST_SIGNUP_REQUEST';
 export const POST_SIGNUP_SUCCESS = 'POST_SIGNUP_SUCCESS';
 export const POST_SIGNUP_FAILURE = 'POST_SIGNUP_FAILURE';
+export const SIGN_OUT = 'SIGN_OUT';
 
 export const postSigninRequest = () => ({
   type: POST_SIGNIN_REQUEST,
@@ -72,3 +73,7 @@ export const postSignup = (body) => async (dispatch) => {
     throw e;
   }
 };
+
+export const signOut = () => ({
+  type: SIGN_OUT,
+});
