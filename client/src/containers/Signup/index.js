@@ -52,9 +52,9 @@ class Signup extends Component {
     const { error } = this.state;
 
     return (
-      <form className="w-75 mx-auto mt-4" onSubmit={this.handleSubmit}>
+      <form className="w-75 mx-auto" onSubmit={this.handleSubmit}>
         <h3 className="text-center">Create an account</h3>
-        {error && <div className="alert alert-danger">{this.state.error}</div>}
+        {error && <div className="alert alert-danger">{error}</div>}
         <div className="form-group">
           <label>Username</label>
           <input type="text" className="form-control" name="username" onChange={this.handleChange} required />
