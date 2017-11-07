@@ -34,9 +34,8 @@ class ArticlePreviews extends Component {
         {articlePreviews.map(a => (
           <div className="card mb-2" key={a.article_id}>
             <div className="card-body p-2">
-              <h5 className="card-title">{a.title}</h5>
-              <p className="card-subtitle">{a.username}</p>
-              <p className="card-text text-muted"><small>{new Date(a.created_at).toLocaleDateString()}</small></p>
+              <h5 className="card-title mb-0">{a.title}</h5>
+              <p className="card-subtitle text-muted"><small>{a.username}</small></p>
             </div>
           </div>
         ))}
