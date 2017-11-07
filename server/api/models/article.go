@@ -15,7 +15,7 @@ const createArticlesTableQuery = `
 	CREATE TABLE IF NOT EXISTS articles (
 		id         SERIAL       PRIMARY KEY,
 		user_id    SERIAL       REFERENCES users,
-		title      VARCHAR(50)  NOT NULL,
+		title      VARCHAR(100)  NOT NULL,
 		body       TEXT         NOT NULL,
 		created_at TIMESTAMP    NOT NULL
 	);
