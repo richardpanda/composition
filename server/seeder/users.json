@@ -1,0 +1,123 @@
+[
+    {
+        "username": "cezarykaras",
+        "email": "cezarykaras@test.com",
+        "password": "test",
+        "articles": [
+            {
+                "title": "Naming 101: Programmer’s Guide on How to Name Things",
+                "body": "One of the most common problems of developers is naming. I can’t count, how many hours I’ve spent thinking how to name things and how many hours it took me to understand code containing bad names. It doesn’t matter if it was an object, method, class or anything else. It’s proven that we spend more time reading code than we do writing it, so good naming always pays off in the future.\nUsing good names makes your code better and cleaner. It helps you to intuitively identify what are the responsibilities of each part of code. It makes your application easy to read in the future by other developers, as well as by yourself.\nIn next few minutes I‘d like to explain the importance of good naming and share some useful tips for finding good names."
+            }
+        ]
+    },
+    {
+        "username": "fanisdespoudis",
+        "email": "fanisdespoudis@test.com",
+        "password": "test",
+        "articles": [
+            {
+                "title": "Understanding SOLID Principles: Open Closed Principle",
+                "body": "This is the 3rd part of the series of understanding SOLID Principles where we explore what is Open-Closed Principle and why it helps with creating layers of abstraction that make it easy to withstand unnecessary change while providing new features.\nAs a small reminder, in SOLID there are five basic principles which help to create good (or solid) software architecture. SOLID is an acronym where:-\nS stands for SRP (Single responsibility principle)\nO stands for OCP (Open closed principle)\nL stands for LSP (Liskov substitution principle)\nI stand for ISP ( Interface segregation principle)\nD stands for DIP ( Dependency inversion principle)\nWe’ve discussed Dependency Inversion and Single Responsibility before.\nNow we are going to address Open Closed Principle."
+            }
+        ]
+    },
+    {
+        "username": "robertcooper",
+        "email": "robertcooper@test.com",
+        "password": "test",
+        "articles": [
+            {
+                "title": "How Sass Can Save You a Lot of Time",
+                "body": "Sass is a CSS preprocessor that solves a lot of the problems with writing CSS and can be extremely useful to incorporate in your projects. I’ll explain what CSS preprocessors are, how you can install Sass, the 2 different Sass syntaxes, some of the main features of Sass and finish off with some cool examples.\nCSS Preprocessors\nCSS preprocessors allow us to use certain features that aren’t currently available in CSS. The CSS specification is slowly adopting features that are currently available in preprocessors (such as variables), but it still has a long way to go to catch up to preprocessors. CSS preprocessors allow you to cut the lines of code necessary for writing your CSS and it also allows you to make changes more quickly since you don’t have to change repeated instances of CSS.\nSass is one of the most popular CSS preprocessors out there and it is widely used in a lot of applications. Sass works by writing your styles in .scss (or .sass) files, which will then get compiled into a regular CSS file. The newly compiled CSS file is what gets loaded to your browser to style your web application. This allows the browser to properly apply the styles to your web page.\nSass stands for Syntactically Awesome StyleSheets\nOf course, Sass is not the only option when it comes to preprocessors. Two other popular options are Less and Stylus, which come with their own set of features and syntax."
+            }
+        ]
+    },
+    {
+        "username": "artemstepanenko",
+        "email": "artemstepanenko@test.com",
+        "password": "test",
+        "articles": [
+            {
+                "title": "How to become a better Stack Overflow user in five simple steps",
+                "body": "Software developers cannot imagine their lives without Stack Overflow.\nWe use it almost every day! We love it. It saves us so much time which may be dedicated to something better than swearing at a computer and inventing a wheel.\nWhat makes Stack Overflow so valuable is its content. Almost everything you can think of is already there. You have a problem you can’t solve alone, you Google it. And there it is, the first link is a Stack Overflow question with the code you were looking for. Very simple. This flow works like a charm.\nWe’re not given this for free. Every bit of useful information there is a result of somebody’s work. Somebody spent their private time investigating a problem and writing down findings so more people can benefit from it. There was a real person behind it, just like you and me.\nThere are psychological studies about people being part of a big group. Facing a problem, we tend to unconsciously expect that there must be somebody else “who will manage this.” We actively work on personal tasks. But if the issue doesn’t affect us directly, we’ll likely delegate it to “somebody else.”\nIn the real world, we heavily rely on transportation, the police, and a healthcare system. There’s no government on Stack Overflow. Perhaps there are a few Batmen and Supermen, but they can’t do everything. We all should be active for the good of all.\nLet’s be a community which cares about its members, those who add value, and not passive consumers.\nThere’re plenty of ways to become a better Stack Overflow user. Start by following these five practices:"
+            }
+        ]
+    },
+    {
+        "username": "vaidehijoshi",
+        "email": "vaidehijoshi@test.com",
+        "password": "test",
+        "articles": [
+            {
+                "title": "Less Repetition, More Dynamic Programming",
+                "body": "One of the running themes throughout this series has been the idea of making large, complex problems, which at first may seem super intimidating, feel so much more approachable. If we want to get really meta about it, that’s what the mission of this entire series is, really: to make the complexities of computer science seem fun, friendly, and thus, far more approachable!\nBut even on a microcosmic level, we’ve done this in many ways for each topic that we’ve covered. We dissected complex data structures like stacks and queues and chiseled them down into their smaller moving parts. We worked our way up to complex algorithms by understanding and slowly and systematically building upon the little pieces that these larger algorithms are all based upon.\nWell, guess what? This technique is far from unique. In fact, it’s probably one of the most commonly-used approaches to problem solving in the world of computer science! Breaking down a problem into smaller, more bite-sized parts is something that computer scientists and programmers alike have been doing for decades. This method is tried, tested, and repeatedly been proven to be true. It’s so commonplace that it has its own name: dynamic programming. Even if you’ve never heard of this term before, there’s a good chance that you’ve either used dynamic programming or are already somewhat familiar with its core concepts.\nFor our purposes, dynamic programming is particularly useful to understand in the context of algorithm design. We’ve dealt with a whole lot of algorithms over the course of this series, from sorting algorithms, to traversal algorithms, to path-finding algorithms. However, we haven’t really talked about the ways that these algorithms are constructed. Not to worry — all of that changes today. It’s time for us to put our designer hats on for a change, and dive into the delicate intricacies of designing algorithms using the principles of dynamic programming.\nLet’s get to it!"
+            }
+        ]
+    },
+    {
+        "username": "adrianbg",
+        "email": "adrianbg@test.com",
+        "password": "test",
+        "articles": [
+            {
+                "title": "Software engineer — from monolith to cloud: think small",
+                "body": "The new architecture types are more complex, but from a developer point of view, it’s easier. Either way, we must change our mindset: we need to think small to create large systems (see Linux as an example).\n\nFrom big to small\nFrom monolith to cloud series 🌩\nA series of articles designed to help developers switch from a monolith to a cloud mindset. The web is full of very good tutorials and examples on Why and How to make the switch, so I decided to focus on the small details.\nAuto Increment to UUID\nThink small\nI found a video that describes the software evolution in the last 20+ years, from monolith to amazon microservices, I highly recommend it for a deeper understanding on the subject:\n\nLet’s recap how the software architecture of the apps evolved over time:\nWrite an app for each architecture\nSame source code compiled to many architectures (compilers and C)\nMonolith: 1 app with 1 running instance and 1 database instance\nDistributed: 1 app with multiple instances and/or 1-n DBs\nServices: multiple apps, 1 or more instances and 1 or more DBs. You split the monolith into more (still big) apps so you can split the work.\nMicroservices: many small (context) apps with n instances. Each module in a monolith is now a standalone service that can be scaled.\nFunctions: stateless pieces of the app that can scale automatically, see AWS Lambda and Google or Azure functions."
+            }
+        ]
+    },
+    {
+        "username": "scottshipp",
+        "email": "scottshipp@test.com",
+        "password": "test",
+        "articles": [
+            {
+                "title": "Why Senior Devs Write Dumb Code and How to Spot a Junior From A Mile Away",
+                "body": "One of my all time favorite quotes is from Brian Goetz, a smart dude in the Java world who is one of the authors of Java Concurrency in Practice, among other things. The quote appears in an interview that Oracle published under the title, “Write Dumb Code”. Goetz was asked how to write code that performs well. Here is what he had to say:\nOften, the way to write fast code in Java applications is to write dumb code — code that is straightforward, clean, and follows the most obvious object-oriented principles.\nThe rest of the ~1000 words is devoted to explaining why trying to optimize code and trying to be clever is a common programmer mistake — a rookie mistake, if you will."
+            }
+        ]
+    },
+    {
+        "username": "leorudberg",
+        "email": "leorudberg@test.com",
+        "password": "test",
+        "articles": [
+            {
+                "title": "Working on the Go Team at Google",
+                "body": "Having recently left the Go team at Google, I thought that it might be worthwhile to reflect on and to write about my experience. After asking the community, I would like to to shed some light on what it’s like to be involved in such a group. In this article, I will discuss my prior experience with Go, how I came to join Google and the Go Team itself, my (tl;dr: awesome) experience on the team, and what my future at Google looks like. Twitter users also expressed interest in hearing about the processes that are involved with maintaining and updating the Go language — to the best of my ability, I will discuss this, too.\nFirst, a little bit about myself: I am 23 years old, less than two years out of my undergrad degree at UW-Madison. Thinking I was going to major exclusively in mathematics, I didn’t start programming until I took an Intro to Java class on a whim. Afterwards, I really got into coding and hacking. Sometime during my four years, I became passionate about both web development and compilers, though I did not use Go for either."
+            }
+        ]
+    },
+    {
+        "username": "kanishkdudeja",
+        "email": "kanishkdudeja@test.com",
+        "password": "test",
+        "articles": [
+            {
+                "title": "The beauty of Go",
+                "body": "I recently started exploring Go for some of my side projects and was really struck by its beauty.\nI realized how beautifully it made a balance between ease of use (generally associated with dynamically typed, interpreted languages), and performance and safety (type safety, memory safety) (generally associated with statically typed, compiled languages).\nApart from these, two more features make it really the perfect language for modern systems development. Both these features are explained in more detail in the Strengths section below.\nOne of them is first class support for concurrency in the language (through goroutines and channels, explained below). Concurrency, by its design, enables you to efficiently use your CPU horsepower. Even if your processor just has 1 core, concurrency’s design enables you to use that one core efficiently. That is why you can typically have hundreds of thousands of concurrent goroutines (lightweight threads) running on a single machine. Channels and goroutines are central to distributed systems since they abstract the producer-consumer messaging paradigm.\nThe other feature I really like about Go is interfaces. Interfaces enable loosely coupled or decoupled components for your systems. Meaning that a part of your code can just rely on an interface type and doesn’t really care about who implements the interface or how the interface is actually implemented. Your controller can then supply a dependency which satisfies the interface (implements all the functions in the interface) to that code. This also enables a really clean architecture for unit testing (through dependency injection). Now, your controller can just inject a mock implementation of the interface required by the code to be able to test if it’s doing its job correctly or not.\nKeeping all these features in mind, I think Go is really a great language. Especially for use cases like cloud systems development (web servers, CDNs, caches etc), distributed systems, microservices etc. So if you’re an engineer or a startup trying to decide what language you want to explore or try out, do give Go a serious thought.\nIn this post, I’ll talk about the following aspects of the language:\na) Introduction\nb) Why was Go needed\nc) Target Audience\nd) Go’s strengths\ne) Go’s weaknesses\nf) Towards Go 2\ng) Go’s design philosophy\nh) How to get started\ni) Who is using Go"
+            }
+        ]
+    },
+    {
+        "username": "alexdevero",
+        "email": "alexdevero@test.com",
+        "password": "test",
+        "articles": [
+            {
+                "title": "6 Simple Tips on How to Start Writing Clean Code",
+                "body": "Writing clean code is not an easy task. It requires experimenting with different tips and practices. The problem is that there are so many practices and tips on this subject it can be overwhelming. As a result, it can be hard for a developer to choose those tips and practices worth following. Let’s make this task easier. In this article, we will first discuss some benefits of writing clean code. Then, we will take a look at six tips, or practices, for writing clean code developers use most often."
+            }
+        ]
+    },
+    {
+        "username": "andrewlader",
+        "email": "andrewlader@test.com",
+        "password": "test",
+        "articles": [
+            {
+                "title": "Should I Rust, or Should I Go",
+                "body": "Should I stay, or should I go?” Great song by the band The Clash. I’m listening to it, right now, while I’m writing this article. The song debuted back in 1982, a long time ago. Back then, I was just a kid exploring a new hobby — programming my Atari 2600. The first video game I ever wrote was written using 6502 Assembly for that console. The compiler for it cost about $65, if I recall, which at the time equated to mowing ~13 or so lawns.\nThe game was simple: using the joystick, maneuver your spaceship through a randomly generated scrolling cave. The cave walls were sinusoidal, scrolling vertically on the left and right sides of the screen, and you had to make sure your craft didn’t crash into them. I know, I know: Not that sophisticated. But I was only ten or eleven years old at the time.\nDespite the “power” of the processor, computing sine values at run-time was simply too much for it. So, using my handy Texas Instruments calculator, I pre-calculated a bunch of the sine values, carefully writing them down on paper, and then entering them in as constants for the game. This greatly enhanced the performance of the game, and made it usable."
+            }
+        ]
+    }
+]
