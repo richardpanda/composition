@@ -11,6 +11,41 @@ import (
 	"github.com/richardpanda/composition/server/api/types"
 )
 
+func GetArticle(c *gin.Context) {
+	db := c.MustGet("db").(*sql.DB)
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	var (
+		articleID int
+		title     string
+		body      string
+		username  string
+		createdAt time.Time
+	)
+
+	err := models.GetArticle(db, id).Scan(&articleID, &title, &body, &username, &createdAt)
+
+	if err == sql.ErrNoRows {
+		c.JSON(404, gin.H{"message": "Unable to find article."})
+		return
+	}
+
+	if err != nil {
+		c.JSON(400, gin.H{"message": err.Error()})
+		return
+	}
+
+	r := types.GetArticleResponseBody{
+		ID:        articleID,
+		Title:     title,
+		Body:      body,
+		Username:  username,
+		CreatedAt: createdAt,
+	}
+
+	c.JSON(200, r)
+}
+
 func GetArticles(c *gin.Context) {
 	db := c.MustGet("db").(*sql.DB)
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))

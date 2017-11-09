@@ -13,6 +13,7 @@ func New(db *sql.DB) *gin.Engine {
 
 	r.Use(middlewares.DB(db))
 
+	r.GET("/api/articles/:id", controllers.GetArticle)
 	r.GET("/api/articles", controllers.GetArticles)
 	r.POST("/api/signin", controllers.PostSignin)
 	r.POST("/api/signup", controllers.PostSignup)

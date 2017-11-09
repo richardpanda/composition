@@ -18,6 +18,14 @@ type ErrorResponseBody struct {
 	Message string `json:"message"`
 }
 
+type GetArticleResponseBody struct {
+	ID        int       `json:"article_id"`
+	Title     string    `json:"title"`
+	Body      string    `json:"body"`
+	Username  string    `json:"username"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
 type GetArticlesBody struct {
 	ArticlePreviews []ArticlePreview `json:"article_previews"`
 }

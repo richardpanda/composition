@@ -14,6 +14,76 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func TestGetArticleWithExistentArticle(t *testing.T) {
+	createUsersTable()
+	createArticlesTable()
+	defer dropUsersTable()
+	defer dropArticlesTable()
+
+	password := "test"
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+
+	assertEqual(t, err, nil)
+
+	u := &models.User{
+		Username: "test",
+		Email:    "test@test.com",
+		Password: string(hash),
+	}
+
+	var userID int
+	err = models.CreateUser(db, u).Scan(&userID)
+
+	assertEqual(t, err, nil)
+
+	a := &models.Article{
+		UserID: userID,
+		Title:  "Title",
+		Body:   "Body",
+	}
+
+	var articleID int
+	err = models.CreateArticle(db, a).Scan(&articleID)
+
+	endpoint := fmt.Sprintf("/api/articles/%d", articleID)
+	req, _ := http.NewRequest("GET", endpoint, nil)
+	rr := httptest.NewRecorder()
+	router.ServeHTTP(rr, req)
+
+	assertEqual(t, rr.Code, 200)
+	assertJSONHeader(t, rr)
+
+	r := &types.GetArticleResponseBody{}
+	err = json.Unmarshal(rr.Body.Bytes(), r)
+
+	assertEqual(t, err, nil)
+	assertEqual(t, r.ID, articleID)
+	assertEqual(t, r.Title, "Title")
+	assertEqual(t, r.Body, "Body")
+	assertEqual(t, r.Username, "test")
+}
+
+func TestGetArticleWithNonexistentArticle(t *testing.T) {
+	createUsersTable()
+	createArticlesTable()
+	defer dropUsersTable()
+	defer dropArticlesTable()
+
+	endpoint := fmt.Sprintf("/api/articles/1")
+	req, _ := http.NewRequest("GET", endpoint, nil)
+	rr := httptest.NewRecorder()
+	router.ServeHTTP(rr, req)
+
+	assertEqual(t, rr.Code, 404)
+	assertJSONHeader(t, rr)
+
+	r := &types.ErrorResponseBody{}
+	err := json.Unmarshal(rr.Body.Bytes(), r)
+
+	assertEqual(t, err, nil)
+	assertEqual(t, r.Message, "Unable to find article.")
+}
+
 func TestGetArticlePreviews(t *testing.T) {
 	createUsersTable()
 	createArticlesTable()

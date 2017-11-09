@@ -21,6 +21,11 @@ const createArticlesTableQuery = `
 	);
 `
 const dropArticlesTableQuery = "DROP TABLE articles;"
+const getArticleQuery = `
+	SELECT articles.id, title, body, username, created_at
+	FROM users, articles
+	WHERE users.id = articles.user_id AND articles.id = $1;
+`
 const getLatestArticlePreviewsQuery = `
 	SELECT username, title, articles.id, created_at
 	FROM users, articles
@@ -40,6 +45,10 @@ func CreateArticlesTable(db *sql.DB) (sql.Result, error) {
 
 func DropArticlesTable(db *sql.DB) (sql.Result, error) {
 	return db.Exec(dropArticlesTableQuery)
+}
+
+func GetArticle(db *sql.DB, id int) *sql.Row {
+	return db.QueryRow(getArticleQuery, id)
 }
 
 func GetLatestArticlePreviews(db *sql.DB, page int) (*sql.Rows, error) {
