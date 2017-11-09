@@ -26,7 +26,7 @@ type GetArticleResponseBody struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-type GetArticlesBody struct {
+type GetArticlesResponseBody struct {
 	ArticlePreviews []ArticlePreview `json:"article_previews"`
 }
 
@@ -37,18 +37,18 @@ type JWTClaims struct {
 	jwt.StandardClaims
 }
 
-type PostArticlesBody struct {
+type PostArticlesRequestBody struct {
 	Title string `json:"title"`
 	Body  string `json:"body"`
 }
 
-type PostArticlesResponse struct {
+type PostArticlesResponseBody struct {
 	ArticleID int    `json:"article_id"`
 	Title     string `json:"title"`
 	Body      string `json:"body"`
 }
 
-type SigninBody struct {
+type SigninRequestBody struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
@@ -57,7 +57,7 @@ type SigninResponseBody struct {
 	Token string `json:"token"`
 }
 
-type SignupBody struct {
+type SignupRequestBody struct {
 	Username        string `json:"username"`
 	Email           string `json:"email"`
 	Password        string `json:"password"`

@@ -29,7 +29,7 @@ func TestSuccessfulSignin(t *testing.T) {
 
 	_ = models.CreateUser(db, u)
 
-	b, _ := json.Marshal(types.SigninBody{
+	b, _ := json.Marshal(types.SigninRequestBody{
 		Username: "test",
 		Password: "test",
 	})
@@ -66,7 +66,7 @@ func TestSigninWithInvalidUsername(t *testing.T) {
 	createUsersTable()
 	defer dropUsersTable()
 
-	b, _ := json.Marshal(types.SigninBody{
+	b, _ := json.Marshal(types.SigninRequestBody{
 		Username: "test",
 		Password: "test",
 	})
@@ -102,7 +102,7 @@ func TestSigninWithInvalidPassword(t *testing.T) {
 
 	models.CreateUser(db, u)
 
-	b, _ := json.Marshal(types.SigninBody{
+	b, _ := json.Marshal(types.SigninRequestBody{
 		Username: "test",
 		Password: "invalid password",
 	})
@@ -125,7 +125,7 @@ func TestSuccessfulSignup(t *testing.T) {
 	createUsersTable()
 	defer dropUsersTable()
 
-	b, _ := json.Marshal(types.SignupBody{
+	b, _ := json.Marshal(types.SignupRequestBody{
 		Username:        "test",
 		Email:           "test@test.com",
 		Password:        "test",
@@ -161,7 +161,7 @@ func TestSignupWithoutBody(t *testing.T) {
 }
 
 func TestSignupWithEmptyBody(t *testing.T) {
-	b, _ := json.Marshal(types.SignupBody{})
+	b, _ := json.Marshal(types.SignupRequestBody{})
 
 	req, _ := http.NewRequest("POST", "/api/signup", bytes.NewBuffer(b))
 	rr := httptest.NewRecorder()
@@ -178,7 +178,7 @@ func TestSignupWithEmptyBody(t *testing.T) {
 }
 
 func TestSignupWithoutUsername(t *testing.T) {
-	b, _ := json.Marshal(types.SignupBody{
+	b, _ := json.Marshal(types.SignupRequestBody{
 		Email:           "test@test.com",
 		Password:        "test",
 		PasswordConfirm: "test",
@@ -199,7 +199,7 @@ func TestSignupWithoutUsername(t *testing.T) {
 }
 
 func TestSignupWithoutEmail(t *testing.T) {
-	b, _ := json.Marshal(types.SignupBody{
+	b, _ := json.Marshal(types.SignupRequestBody{
 		Username:        "test",
 		Password:        "test",
 		PasswordConfirm: "test",
@@ -220,7 +220,7 @@ func TestSignupWithoutEmail(t *testing.T) {
 }
 
 func TestSignupWithoutPassword(t *testing.T) {
-	b, _ := json.Marshal(types.SignupBody{
+	b, _ := json.Marshal(types.SignupRequestBody{
 		Username:        "test",
 		Email:           "test@test.com",
 		PasswordConfirm: "test",
@@ -241,7 +241,7 @@ func TestSignupWithoutPassword(t *testing.T) {
 }
 
 func TestSignupWithoutPasswordConfirm(t *testing.T) {
-	b, _ := json.Marshal(types.SignupBody{
+	b, _ := json.Marshal(types.SignupRequestBody{
 		Username: "test",
 		Email:    "test@test.com",
 		Password: "test",
@@ -262,7 +262,7 @@ func TestSignupWithoutPasswordConfirm(t *testing.T) {
 }
 
 func TestSignupWithMismatchPasswordAndPasswordConfirm(t *testing.T) {
-	b, _ := json.Marshal(types.SignupBody{
+	b, _ := json.Marshal(types.SignupRequestBody{
 		Username:        "test",
 		Email:           "test@test.com",
 		Password:        "a",
@@ -300,7 +300,7 @@ func TestSignUpWithRegisteredUsername(t *testing.T) {
 
 	_ = models.CreateUser(db, u)
 
-	b, _ := json.Marshal(types.SignupBody{
+	b, _ := json.Marshal(types.SignupRequestBody{
 		Username:        "test",
 		Email:           "test2@test.com",
 		Password:        "test",
@@ -338,7 +338,7 @@ func TestSignUpWithRegisteredEmail(t *testing.T) {
 
 	_ = models.CreateUser(db, u)
 
-	b, _ := json.Marshal(types.SignupBody{
+	b, _ := json.Marshal(types.SignupRequestBody{
 		Username:        "test2",
 		Email:           "test@test.com",
 		Password:        "test",

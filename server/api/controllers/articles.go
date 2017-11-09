@@ -84,7 +84,7 @@ func PostArticles(c *gin.Context) {
 	user, _ := c.Get("user")
 	userID := int(user.(jwt.MapClaims)["id"].(float64))
 
-	body := &types.PostArticlesBody{}
+	body := &types.PostArticlesRequestBody{}
 
 	if err := c.BindJSON(body); err != nil {
 		c.JSON(400, gin.H{"message": err.Error()})

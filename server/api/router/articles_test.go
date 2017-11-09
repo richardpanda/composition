@@ -121,7 +121,7 @@ func TestGetArticlePreviews(t *testing.T) {
 	assertEqual(t, rr.Code, 200)
 	assertJSONHeader(t, rr)
 
-	resp := &types.GetArticlesBody{}
+	resp := &types.GetArticlesResponseBody{}
 	err = json.Unmarshal(rr.Body.Bytes(), resp)
 
 	assertEqual(t, err, nil)
@@ -167,7 +167,7 @@ func TestSuccessfulPostArticles(t *testing.T) {
 
 	assertEqual(t, err, nil)
 
-	b, _ := json.Marshal(types.PostArticlesBody{
+	b, _ := json.Marshal(types.PostArticlesRequestBody{
 		Title: "Lorem Ipsum",
 		Body:  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
 	})
@@ -182,14 +182,14 @@ func TestSuccessfulPostArticles(t *testing.T) {
 	assertEqual(t, rr.Code, 201)
 	assertJSONHeader(t, rr)
 
-	respBody := &types.PostArticlesResponse{}
+	respBody := &types.PostArticlesResponseBody{}
 	err = json.Unmarshal(rr.Body.Bytes(), respBody)
 
 	assertEqual(t, err, nil)
 }
 
 func TestPostArticlesWithoutToken(t *testing.T) {
-	b, _ := json.Marshal(types.PostArticlesBody{
+	b, _ := json.Marshal(types.PostArticlesRequestBody{
 		Title: "Lorem Ipsum",
 		Body:  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
 	})
@@ -222,7 +222,7 @@ func TestPostArticlesWithInvalidToken(t *testing.T) {
 
 	assertEqual(t, err, nil)
 
-	b, _ := json.Marshal(types.PostArticlesBody{
+	b, _ := json.Marshal(types.PostArticlesRequestBody{
 		Title: "Lorem Ipsum",
 		Body:  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
 	})
@@ -256,7 +256,7 @@ func TestPostArticlesWithoutTitle(t *testing.T) {
 
 	assertEqual(t, err, nil)
 
-	b, _ := json.Marshal(types.PostArticlesBody{
+	b, _ := json.Marshal(types.PostArticlesRequestBody{
 		Body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
 	})
 
@@ -289,7 +289,7 @@ func TestPostArticlesWithoutBody(t *testing.T) {
 
 	assertEqual(t, err, nil)
 
-	b, _ := json.Marshal(types.PostArticlesBody{
+	b, _ := json.Marshal(types.PostArticlesRequestBody{
 		Title: "Lorem Ipsum",
 	})
 

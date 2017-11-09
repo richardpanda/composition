@@ -19,7 +19,7 @@ func PostSignin(c *gin.Context) {
 		return
 	}
 
-	body := &types.SigninBody{}
+	body := &types.SigninRequestBody{}
 
 	if err := c.BindJSON(body); err != nil {
 		c.JSON(400, gin.H{"message": err.Error()})
@@ -68,7 +68,7 @@ func PostSignup(c *gin.Context) {
 		return
 	}
 
-	body := &types.SignupBody{}
+	body := &types.SignupRequestBody{}
 
 	if err := c.BindJSON(body); err != nil {
 		c.JSON(400, gin.H{"message": err.Error()})
