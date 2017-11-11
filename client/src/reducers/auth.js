@@ -1,3 +1,5 @@
+import jwtDecode from 'jwt-decode';
+
 import { auth as actions } from '../actions';
 import { auth as initialState } from '../state';
 
@@ -18,12 +20,18 @@ const reducer = (state = initialState, action) => {
       return { ...state, isFetching: true };
     case POST_SIGNIN_SUCCESS:
     case POST_SIGNUP_SUCCESS:
-      return { ...state, isFetching: false, isLoggedIn: true, token: action.payload.token };
+      return {
+        ...state,
+        isFetching: false,
+        isLoggedIn: true,
+        token: action.payload.token,
+        username: jwtDecode(action.payload.token).username,
+      };
     case POST_SIGNIN_FAILURE:
     case POST_SIGNUP_FAILURE:
       return { ...state, isFetching: false, isLoggedIn: false };
     case SIGN_OUT:
-      return { ...state, isLoggedIn: false, token: '' }
+      return { ...state, isLoggedIn: false, token: '', username: '' }
     default:
       return state;
   }
