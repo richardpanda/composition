@@ -157,8 +157,9 @@ func TestSuccessfulPostArticles(t *testing.T) {
 	assertEqual(t, err, nil)
 
 	c := types.JWTClaims{
-		id,
-		jwt.StandardClaims{
+		ID:       id,
+		Username: u.Username,
+		StandardClaims: jwt.StandardClaims{
 			Issuer: "Composition",
 		},
 	}
@@ -210,9 +211,11 @@ func TestPostArticlesWithoutToken(t *testing.T) {
 
 func TestPostArticlesWithInvalidToken(t *testing.T) {
 	id := 1
+	username := "test"
 	c := types.JWTClaims{
-		id,
-		jwt.StandardClaims{
+		ID:       id,
+		Username: username,
+		StandardClaims: jwt.StandardClaims{
 			Issuer: "Composition",
 		},
 	}
@@ -245,9 +248,11 @@ func TestPostArticlesWithInvalidToken(t *testing.T) {
 
 func TestPostArticlesWithoutTitle(t *testing.T) {
 	id := 1
+	username := "test"
 	c := types.JWTClaims{
-		id,
-		jwt.StandardClaims{
+		ID:       id,
+		Username: username,
+		StandardClaims: jwt.StandardClaims{
 			Issuer: "Composition",
 		},
 	}
@@ -278,9 +283,11 @@ func TestPostArticlesWithoutTitle(t *testing.T) {
 
 func TestPostArticlesWithoutBody(t *testing.T) {
 	id := 1
+	username := "test"
 	c := types.JWTClaims{
-		id,
-		jwt.StandardClaims{
+		ID:       id,
+		Username: username,
+		StandardClaims: jwt.StandardClaims{
 			Issuer: "Composition",
 		},
 	}

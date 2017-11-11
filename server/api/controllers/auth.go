@@ -48,8 +48,9 @@ func PostSignin(c *gin.Context) {
 	}
 
 	claims := types.JWTClaims{
-		id,
-		jwt.StandardClaims{
+		ID:       id,
+		Username: username,
+		StandardClaims: jwt.StandardClaims{
 			Issuer: "Composition",
 		},
 	}
@@ -124,8 +125,9 @@ func PostSignup(c *gin.Context) {
 	}
 
 	claims := types.JWTClaims{
-		id,
-		jwt.StandardClaims{
+		ID:       id,
+		Username: body.Username,
+		StandardClaims: jwt.StandardClaims{
 			Issuer: "Composition",
 		},
 	}

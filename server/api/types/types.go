@@ -33,7 +33,8 @@ type GetArticlesResponseBody struct {
 var JWTSecret = []byte(os.Getenv("JWT_SECRET"))
 
 type JWTClaims struct {
-	ID int `json:"id"`
+	ID       int    `json:"id"`
+	Username string `json:"username"`
 	jwt.StandardClaims
 }
 
