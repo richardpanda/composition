@@ -8,7 +8,7 @@ class Navbar extends Component {
 
     return (
       <nav className="navbar navbar-dark bg-dark">
-        <a className="navbar-brand" href="/">Composition</a>
+        <Link to="/"><div className="navbar-brand">Composition</div></Link>
         {isLoggedIn ? (
           <Link to="/signout"><button className="btn btn-primary">Sign Out</button></Link>
         ) : (
