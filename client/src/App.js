@@ -4,6 +4,7 @@ import {
   Switch,
 } from 'react-router-dom';
 
+import Article from './components/Article';
 import Home from './containers/Home';
 import Navbar from './containers/Navbar';
 import NewArticle from './containers/NewArticle';
@@ -18,10 +19,11 @@ class App extends Component {
         <header className="mb-4">
           <Navbar />
         </header>
-        <main className="container">
+        <main className="container mb-2">
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/articles/new" component={NewArticle} />
+            <Route path="/articles/:id" component={Article} />
             <Route path="/signin" component={Signin} />
             <Route path="/signout" component={Signout} />
             <Route path="/signup" component={Signup} />

@@ -1,0 +1,8 @@
+.article-body {
+    font-family: 'EB Garamond', serif;
+    font-size: 1.35rem;
+}
+
+.article-container {
+    max-width: 800px;
+}
