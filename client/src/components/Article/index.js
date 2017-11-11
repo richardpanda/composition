@@ -41,7 +41,11 @@ class Article extends Component {
               <h1 className="mb-0">{article.title}</h1>
               <h4><small className="text-muted">Written by: {article.username}</small></h4>
             </div>
-            <div className="article-body">{article.body}</div>
+            <div className="article-body">
+              {article.body.split('\n').map((paragraph, idx) => (
+                <div key={idx} className="mb-4">{paragraph}</div>
+              ))}
+            </div>
           </div>
         }
       </div>
